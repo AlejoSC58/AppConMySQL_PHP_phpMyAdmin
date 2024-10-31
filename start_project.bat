@@ -1,15 +1,22 @@
-#!/bin/bash
-# Clona el repositorio si no existe, o lo actualiza si ya existe
-if [ ! -d "AppConMySQL_PHP_phpMyAdmin" ]; then
-    git clone https://github.com/AlejoSC58/AppConMySQL_PHP_phpMyAdmin.git
-else
+
+@echo off
+REM Comprobar si la carpeta del proyecto ya existe
+if not exist "AppConMySQL_PHP_phpMyAdmin" (
+    echo Clonando el repositorio...
+    git clone https://github.com/alejomallen58/AppConMySQL_PHP_phpMyAdmin.git
+) else (
+    echo Repositorio ya clonado. Actualizando...
     cd AppConMySQL_PHP_phpMyAdmin
     git pull
     cd ..
-fi
+)
 
-# Entra en el directorio del proyecto
+REM Cambiar al directorio del proyecto
 cd AppConMySQL_PHP_phpMyAdmin
 
-# Ejecuta Docker Compose
+REM Ejecutar Docker Compose
+echo Iniciando Docker Compose...
 docker-compose up -d
+
+echo El programa se ha iniciado. Pulsa cualquier tecla para salir.
+pause

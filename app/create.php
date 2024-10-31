@@ -5,11 +5,29 @@ $user = getenv('DB_USER');
 $pass = getenv('DB_PASSWORD');
 $dsn = "mysql:host=$host;dbname=$db;charset=utf8mb4";
 
+try {
+    // Conectar a la base de datos
+    $pdo = new PDO($dsn, $user, $pass);
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+    // Crear la tabla productos si no existe
+    $createTableQuery = "CREATE TABLE IF NOT EXISTS productos (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        nombre VARCHAR(255) NOT NULL,
+        descripcion TEXT NOT NULL,
+        precio DECIMAL(10, 2) NOT NULL,
+        cantidad INT NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    ) ENGINE=INNODB;";
+    $pdo->exec($createTableQuery);
+
+} catch (PDOException $e) {
+    die("Error en la conexión: " . $e->getMessage());
+}
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     try {
-        $pdo = new PDO($dsn, $user, $pass);
-        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
+        // Preparar y ejecutar la inserción
         $stmt = $pdo->prepare("INSERT INTO productos (nombre, descripcion, precio, cantidad) VALUES (?, ?, ?, ?)");
         $stmt->execute([$_POST['nombre'], $_POST['descripcion'], $_POST['precio'], $_POST['cantidad']]);
 
